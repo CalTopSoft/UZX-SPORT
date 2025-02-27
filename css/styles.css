@@ -156,7 +156,7 @@ p {
     grid-template-columns: 70px 1fr 120px 100px;
     align-items: center;
     background: #2E2E2E;
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s;
@@ -178,9 +178,19 @@ p {
 }
 
 .ranking-item .trend img {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 45px;
     vertical-align: middle;
+    margin-left: 25px;
+}
+
+
+
+.trend{
+    width: 152px;
+    height: 45px;
+    vertical-align: middle;
+    margin-left: -10px;
 }
 
 .grid {
@@ -327,12 +337,26 @@ button:hover {
     h1 { font-size: 2rem; }
     h2 { font-size: 1.8rem; }
     .ranking-item {
-        grid-template-columns: 60px 1fr;
+        grid-template-columns: 60px 1fr auto;
         gap: 10px;
-        padding: 15px;
+        padding: 10px;
+        align-items: center;
     }
-    .ranking-item span:nth-child(3), .ranking-item span:nth-child(4) {
+    .ranking-item img {
+        grid-row: 1 / span 2;
+    }
+    .ranking-item span:nth-child(2) {
         grid-column: 2;
+        font-size: 1rem;
+    }
+    .ranking-item span:nth-child(3) {
+        grid-column: 3;
+        font-size: 0.9rem;
+    }
+    .ranking-item span:nth-child(4) {
+        grid-column: 3;
+        font-size: 0.9rem;
+        text-align: right;
     }
     .grid { grid-template-columns: 1fr; }
     table { table-layout: fixed; }

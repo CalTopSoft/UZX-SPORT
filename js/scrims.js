@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const sidebarItems = document.querySelectorAll('.sidebar li');
     const sections = document.querySelectorAll('.content');
-    let isUploading = false; // Bloqueo para evitar múltiples subidas simultáneas
+    let isUploading = false;
 
     if (isAdmin) {
         document.querySelector('.sidebar li[data-section="admin"]').classList.remove('hidden');
@@ -30,16 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const [scrimsResponse, nameResponse, rankingsResponse] = await Promise.all([
             fetch(`${githubBaseUrl}scrims.json`).then(res => res.ok ? res.json() : []),
-            fetch(`${githubBaseUrl}name.json`).then(res => res.ok ? res.json() : [
-                {"nombre": "21S", "imagen": "21S.png"},
-                {"nombre": "7N", "imagen": "7N.png"},
-                {"nombre": "ARMADYL", "imagen": "AD.png"},
-                {"nombre": "HELLSTAR", "imagen": "AHS.png"},
-                {"nombre": "ALQ MOB", "imagen": "ALQ.png"},
-                {"nombre": "ARENA", "imagen": "ARENA.png"},
-                {"nombre": "T1", "imagen": "t1.png"},
-                {"nombre": "AS PC", "imagen": "AS.png"}
-            ]),
+            fetch(`${githubBaseUrl}name.json`).then(res => res.ok ? res.json() : []),
             fetch(`${githubBaseUrl}rankings.json`).then(res => res.ok ? res.json() : [])
         ]);
         scrimsData = scrimsResponse;
@@ -51,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         actualizarRanking(true);
         cargarFormularioAdmin();
 
-        let lastUpdated = localStorage.getItem('lastUpdated') || '--';
+        const lastUpdated = scrimsData.length > 0 ? scrimsData[scrimsData.length - 1].fecha : '--';
         document.getElementById('last-updated').textContent = `Última actualización: ${lastUpdated}`;
     } catch (err) {
         console.error('Error loading data from GitHub:', err);
@@ -96,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const trendIcon = trend ? `<img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/icons/${trend}.png" alt="${trend}">` : '';
             const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '';
             div.innerHTML = `
-                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png" alt="${equipo.nombre}" onerror="this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
+                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipo.imagen}" alt="${equipo.nombre}" onerror="this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
                 <span>${equipo.nombre}</span>
                 <span>${equipo.puntos} pts</span>
                 <span class="trend">#${equipo.posicion} ${trendIcon} ${posicionChange ? posicionChange : ''}</span>
@@ -169,24 +160,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     window.checkEquipo = function(input) {
         const exists = window.nameData.some(e => e.nombre === input.value);
-        input.style.borderColor = exists ? '#1B5E20' : '#F44336';
+        input.style.borderColor = exists ? '#1B3C34' : '#F44336';
     };
 
     document.getElementById('fill-random').addEventListener('click', () => {
-        const equiposDisponibles = [
-            {"nombre": "21S", "imagen": "21S.png"},
-            {"nombre": "7N", "imagen": "7N.png"},
-            {"nombre": "ARMADYL", "imagen": "AD.png"},
-            {"nombre": "HELLSTAR", "imagen": "AHS.png"},
-            {"nombre": "ALQ MOB", "imagen": "ALQ.png"},
-            {"nombre": "ARENA", "imagen": "ARENA.png"},
-            {"nombre": "T1", "imagen": "t1.png"},
-            {"nombre": "AS PC", "imagen": "AS.png"}
-        ];
-        const shuffled = equiposDisponibles.sort(() => 0.5 - Math.random()).slice(0, 8);
+        const equiposDisponibles = window.nameData.sort(() => 0.5 - Math.random()).slice(0, 8);
         const inputs = document.querySelectorAll('#resultados-input input[name^="nombre-"]');
         inputs.forEach((input, i) => {
-            input.value = shuffled[i].nombre;
+            input.value = equiposDisponibles[i].nombre;
             checkEquipo(input);
         });
     });
@@ -220,8 +201,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const imageContent = event.target.result.split(',')[1];
             await updateGitHubFiles(fileName, imageContent);
-            localStorage.setItem('lastUpdated', new Date().toLocaleString());
-            document.getElementById('last-updated').textContent = `Última actualización: ${new Date().toLocaleString()}`;
+            localStorage.setItem('lastUpdated', nuevoScrim.fecha);
+            document.getElementById('last-updated').textContent = `Última actualización: ${nuevoScrim.fecha}`;
             actualizarRanking(true);
             mostrarScrims(scrimsData);
             alert('Scrim subido con éxito');
@@ -256,7 +237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             rankingsData = rankingsResponse;
         } catch (error) {
             console.error('Error updating GitHub:', error);
-            isUploading = false; // Resetear en caso de error
+            isUploading = false;
         }
     }
 });
