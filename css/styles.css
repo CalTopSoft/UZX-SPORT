@@ -341,25 +341,30 @@ button:hover {
         gap: 10px;
         padding: 10px;
         align-items: center;
+        
     }
     .ranking-item img {
         grid-row: 1 / span 2;
+        margin-top: 5px;
     }
     .ranking-item span:nth-child(2) {
         grid-column: 2;
-        font-size: 1rem;
+        font-size: 0.9rem;
+        margin-top: 15px;
     }
     .ranking-item span:nth-child(3) {
         grid-column: 3;
         font-size: 0.9rem;
+        margin-top: 15px;
     }
     .ranking-item span:nth-child(4) {
-        grid-column: 3;
+        grid-column: 4;
         font-size: 0.9rem;
         text-align: right;
+        margin-top: 15px;
     }
-    .grid { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 2fr; }
     table { table-layout: fixed; }
-    th, td { width: 50%; font-size: 0.9rem; padding: 10px; }
-    td input { font-size: 0.9rem; padding: 8px; }
+    th, td { width: 50%; font-size: 0.2rem; padding: 1px; }
+    td input { font-size: 0.5rem; padding: 2px; }
 }
