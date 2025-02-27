@@ -5,10 +5,11 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const { scrims, name, rankings } = JSON.parse(event.body);
-  const token = process.env.GITHUB_TOKEN; // Token de GitHub desde variables de entorno
-  const owner = 'CalTopSoft'; // Reemplázalo con tu usuario de GitHub
-  const repo = 'UZX-SPORT'; // Reemplázalo con tu repositorio de GitHub
+  const body = JSON.parse(event.body);
+  const { scrims, name, rankings, file } = body;
+  const token = process.env.GITHUB_TOKEN;
+  const owner = 'CalTopSoft';
+  const repo = 'UZX-SPORT';
   const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json' };
 
   try {
@@ -38,6 +39,18 @@ exports.handler = async (event) => {
       content: Buffer.from(JSON.stringify(rankings)).toString('base64'),
       sha: sha
     }, { headers });
+
+    // Subir imagen si existe
+    if (file) {
+      const { path, content } = file;
+      response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, { headers }).catch(() => ({ data: null }));
+      const imageSha = response.data ? response.data.sha : null;
+      await axios.put(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+        message: `Update ${path}`,
+        content: content,
+        sha: imageSha
+      }, { headers });
+    }
 
     return { statusCode: 200, body: JSON.stringify({ message: 'Datos actualizados en GitHub' }) };
   } catch (error) {

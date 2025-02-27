@@ -46,11 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         nameData = nameResponse;
         rankingsData = rankingsResponse;
 
-        // Sincronizar localStorage con GitHub
-        localStorage.setItem('scrims', JSON.stringify(scrimsData));
-        localStorage.setItem('name', JSON.stringify(nameData));
-        localStorage.setItem('rankings', JSON.stringify(rankingsData));
-
         window.nameData = nameData;
         mostrarScrims(scrimsData);
         actualizarRanking(true);
@@ -78,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const rankingAnterior = rankingsData.length ? rankingsData : rankingActual.map(e => ({ ...e, puntos: 0, posicion: rankingActual.length + 1 }));
         const nuevoRanking = rankingActual.map((equipo, index) => {
-            const anterior = rankingAnterior.find(e => e.nombre === equipo.nombre) || { puntos: 0, posicion: rankingAnterior.length + 1 };
+            const anterior = rankingAnterior.find(e => e.nombre === equipo.nombre) || { puntos: 0, posicion: rankingActual.length + 1 };
             return {
                 nombre: equipo.nombre,
                 puntos: equipo.puntos,
@@ -88,7 +83,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         rankingsData = nuevoRanking;
-        localStorage.setItem('rankings', JSON.stringify(rankingsData));
         mostrarRanking(nuevoRanking, animate);
     }
 
@@ -127,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             div.innerHTML = `
                 <h3>Scrim ${scrim.id}</h3>
                 <p>Fecha: ${scrim.fecha}</p>
-                <img src="${scrim.imagenBase64 || '../assets/imgs/' + scrim.imagen}" alt="Tabla Scrim ${scrim.id}">
+                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/${scrim.imagen}" alt="Tabla Scrim ${scrim.id}" onerror="this.src='../assets/imgs/placeholder.png'">
                 <button class="like-btn" data-id="${scrim.id}" ${loggedIn && !hasLiked ? '' : 'disabled'}>Like (${scrim.likes || 0})</button>
             `;
             container.appendChild(div);
@@ -135,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (loggedIn) {
             document.querySelectorAll('.like-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', async () => {
                     const scrimId = btn.dataset.id;
                     const scrim = scrimsData.find(s => s.id == scrimId);
                     if (scrim) {
@@ -143,8 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         let userLikes = JSON.parse(localStorage.getItem(`likes_${userId}`)) || [];
                         userLikes.push(scrimId);
                         localStorage.setItem(`likes_${userId}`, JSON.stringify(userLikes));
-                        localStorage.setItem('scrims', JSON.stringify(scrimsData));
-                        updateGitHubFiles();
+                        await updateGitHubFiles();
                         btn.textContent = `Like (${scrim.likes})`;
                         btn.disabled = true;
                     }
@@ -198,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    document.getElementById('admin-form').addEventListener('submit', (e) => {
+    document.getElementById('admin-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const fileInput = document.getElementById('tabla-img');
         const file = fileInput.files[0];
@@ -209,27 +202,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const reader = new FileReader();
         reader.onload = async function(event) {
-            scrimsData = JSON.parse(localStorage.getItem('scrims')) || [];
-            const nuevoId = scrimsData.length + 1;
+            const nuevoId = (scrimsData.length + 1).toString();
+            const imageName = `tabla_scrim_${nuevoId}.png`;
             const nuevoScrim = {
-                id: nuevoId.toString(),
+                id: nuevoId,
                 fecha: new Date().toISOString().split('T')[0],
-                imagenBase64: event.target.result,
+                imagen: imageName,
                 likes: 0,
                 resultados
             };
             scrimsData.push(nuevoScrim);
-            localStorage.setItem('scrims', JSON.stringify(scrimsData));
+
+            // Subir la imagen a GitHub como archivo separado
+            await uploadImageToGitHub(file, imageName);
+            await updateGitHubFiles();
             localStorage.setItem('lastUpdated', new Date().toLocaleString());
             document.getElementById('last-updated').textContent = `Última actualización: ${new Date().toLocaleString()}`;
-            actualizarNameJson(resultados);
-            await updateGitHubFiles(); // Esperar a que se actualice en GitHub
             actualizarRanking(true);
             mostrarScrims(scrimsData);
             alert('Scrim subido con éxito');
         };
-        reader.readAsDataURL(file);
+        reader.readAsArrayBuffer(file); // Leer como ArrayBuffer para subir como archivo
     });
+
+    async function uploadImageToGitHub(file, fileName) {
+        const arrayBuffer = await file.arrayBuffer();
+        const content = Buffer.from(arrayBuffer).toString('base64');
+        const response = await fetch('https://uzx-sport.netlify.app/.netlify/functions/update-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                file: {
+                    path: `assets/imgs/${fileName}`,
+                    content: content
+                }
+            })
+        });
+        if (!response.ok) throw new Error('Failed to upload image');
+    }
 
     async function updateGitHubFiles() {
         try {
@@ -242,6 +252,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     rankings: rankingsData
                 })
             });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             console.log(data.message);
 
@@ -254,9 +265,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             scrimsData = scrimsResponse;
             window.nameData = nameResponse;
             rankingsData = rankingsResponse;
-            localStorage.setItem('scrims', JSON.stringify(scrimsData));
-            localStorage.setItem('name', JSON.stringify(window.nameData));
-            localStorage.setItem('rankings', JSON.stringify(rankingsData));
         } catch (error) {
             console.error('Error updating GitHub:', error);
         }
@@ -268,6 +276,5 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.nameData.push({ nombre: equipo.nombre, imagen: `${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png` });
             }
         });
-        localStorage.setItem('name', JSON.stringify(window.nameData));
     }
 });
