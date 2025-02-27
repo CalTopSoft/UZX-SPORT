@@ -86,10 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const trend = equipo.posicion < equipo.posicionAnterior ? 'up' : (equipo.posicion > equipo.posicionAnterior ? 'down' : '');
             const trendIcon = trend ? `<img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/icons/${trend}.png" alt="${trend}">` : '';
             const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '';
-            // Buscar la imagen en nameData basada en el nombre del equipo
             const equipoData = window.nameData.find(e => e.nombre === equipo.nombre) || { imagen: 'placeholder.png' };
             const logoUrl = `https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipoData.imagen}`;
-            console.log(`Intentando cargar logo para ${equipo.nombre}: ${logoUrl}`); // Depuración
+            console.log(`Intentando cargar logo para ${equipo.nombre}: ${logoUrl}`);
             div.innerHTML = `
                 <img src="${logoUrl}" alt="${equipo.nombre}" onerror="console.error('Error cargando logo para ${equipo.nombre}: ${logoUrl}'); this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
                 <span>${equipo.nombre}</span>
@@ -213,6 +212,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             isUploading = false;
         };
         reader.readAsDataURL(file);
+    });
+
+    // Nueva funcionalidad para borrar todo
+    document.getElementById('reset-data').addEventListener('click', async () => {
+        if (!confirm('¿Estás seguro de que quieres borrar todos los scrims y rankings? Esta acción no se puede deshacer.')) {
+            return;
+        }
+        if (isUploading) {
+            alert('Por favor, espera a que termine de subir el scrim actual.');
+            return;
+        }
+        isUploading = true;
+        try {
+            scrimsData = [];
+            rankingsData = [];
+            await fetch('https://uzx-sport.netlify.app/.netlify/functions/update-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    scrims: scrimsData,
+                    name: window.nameData,
+                    rankings: rankingsData,
+                    image: null // No subimos imagen al resetear
+                })
+            });
+            document.getElementById('last-updated').textContent = 'Última actualización: --';
+            localStorage.removeItem('lastUpdated');
+            mostrarScrims(scrimsData);
+            actualizarRanking(true);
+            alert('Todos los datos han sido borrados con éxito.');
+        } catch (error) {
+            console.error('Error resetting data:', error);
+            alert('Hubo un error al borrar los datos. Intenta de nuevo.');
+        }
+        isUploading = false;
     });
 
     async function updateGitHubFiles(fileName, imageContent) {
