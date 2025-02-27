@@ -6,7 +6,7 @@ exports.handler = async (event) => {
   }
 
   const body = JSON.parse(event.body);
-  const { scrims, name, rankings, file } = body;
+  const { scrims, name, rankings, image } = body; // Añadimos 'image' para manejar la subida
   const token = process.env.GITHUB_TOKEN;
   const owner = 'CalTopSoft';
   const repo = 'UZX-SPORT';
@@ -41,18 +41,18 @@ exports.handler = async (event) => {
     }, { headers });
 
     // Subir imagen si existe
-    if (file) {
-      const { path, content } = file;
-      response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, { headers }).catch(() => ({ data: null }));
+    if (image) {
+      const { fileName, content } = image;
+      response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/contents/assets/imgs/${fileName}`, { headers }).catch(() => ({ data: null }));
       const imageSha = response.data ? response.data.sha : null;
-      await axios.put(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-        message: `Update ${path}`,
+      await axios.put(`https://api.github.com/repos/${owner}/${repo}/contents/assets/imgs/${fileName}`, {
+        message: `Upload ${fileName}`,
         content: content,
         sha: imageSha
       }, { headers });
     }
 
-    return { statusCode: 200, body: JSON.stringify({ message: 'Datos actualizados en GitHub' }) };
+    return { statusCode: 200, body: JSON.stringify({ message: 'Datos e imagen actualizados en GitHub' }) };
   } catch (error) {
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }

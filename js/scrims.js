@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Cargar datos desde GitHub
     const githubBaseUrl = 'https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/data/';
     let scrimsData = [];
     let nameData = [];
@@ -96,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const trendIcon = trend ? `<img src="../assets/icons/${trend}.png" alt="${trend}">` : '';
             const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '';
             div.innerHTML = `
-                <img src="../logos/${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png" alt="${equipo.nombre}" onerror="this.src='../logos/default.png'">
+                <img src="../logos/${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png" alt="${equipo.nombre}" onerror="this.src='https://via.placeholder.com/50'">
                 <span>${equipo.nombre}</span>
                 <span>${equipo.puntos} pts</span>
                 <span class="trend">#${equipo.posicion} ${trendIcon} ${posicionChange ? posicionChange : ''}</span>
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             div.innerHTML = `
                 <h3>Scrim ${scrim.id}</h3>
                 <p>Fecha: ${scrim.fecha}</p>
-                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/${scrim.imagen}" alt="Tabla Scrim ${scrim.id}" onerror="this.src='../assets/imgs/placeholder.png'">
+                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/${scrim.imagen}" alt="Tabla Scrim ${scrim.id}" onerror="this.src='https://via.placeholder.com/50'">
                 <button class="like-btn" data-id="${scrim.id}" ${loggedIn && !hasLiked ? '' : 'disabled'}>Like (${scrim.likes || 0})</button>
             `;
             container.appendChild(div);
@@ -203,45 +202,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         const reader = new FileReader();
         reader.onload = async function(event) {
             const nuevoId = (scrimsData.length + 1).toString();
-            const imageName = `tabla_scrim_${nuevoId}.png`;
+            const fileName = `tabla_scrim_${nuevoId}.png`;
             const nuevoScrim = {
                 id: nuevoId,
                 fecha: new Date().toISOString().split('T')[0],
-                imagen: imageName,
+                imagen: fileName,
                 likes: 0,
                 resultados
             };
             scrimsData.push(nuevoScrim);
 
-            // Subir la imagen a GitHub como archivo separado
-            await uploadImageToGitHub(file, imageName);
-            await updateGitHubFiles();
+            // Convertir imagen a base64 en el cliente
+            const imageContent = event.target.result.split(',')[1]; // Remover "data:image/png;base64,"
+            await updateGitHubFiles(fileName, imageContent);
             localStorage.setItem('lastUpdated', new Date().toLocaleString());
             document.getElementById('last-updated').textContent = `Última actualización: ${new Date().toLocaleString()}`;
             actualizarRanking(true);
             mostrarScrims(scrimsData);
             alert('Scrim subido con éxito');
         };
-        reader.readAsArrayBuffer(file); // Leer como ArrayBuffer para subir como archivo
+        reader.readAsDataURL(file);
     });
 
-    async function uploadImageToGitHub(file, fileName) {
-        const arrayBuffer = await file.arrayBuffer();
-        const content = Buffer.from(arrayBuffer).toString('base64');
-        const response = await fetch('https://uzx-sport.netlify.app/.netlify/functions/update-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                file: {
-                    path: `assets/imgs/${fileName}`,
-                    content: content
-                }
-            })
-        });
-        if (!response.ok) throw new Error('Failed to upload image');
-    }
-
-    async function updateGitHubFiles() {
+    async function updateGitHubFiles(fileName, imageContent) {
         try {
             const response = await fetch('https://uzx-sport.netlify.app/.netlify/functions/update-data', {
                 method: 'POST',
@@ -249,7 +232,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify({
                     scrims: scrimsData,
                     name: window.nameData,
-                    rankings: rankingsData
+                    rankings: rankingsData,
+                    image: fileName && imageContent ? { fileName, content: imageContent } : null
                 })
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -268,13 +252,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             console.error('Error updating GitHub:', error);
         }
-    }
-
-    function actualizarNameJson(resultados) {
-        resultados.forEach(equipo => {
-            if (!window.nameData.some(e => e.nombre === equipo.nombre)) {
-                window.nameData.push({ nombre: equipo.nombre, imagen: `${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png` });
-            }
-        });
     }
 });
