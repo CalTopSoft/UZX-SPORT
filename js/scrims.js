@@ -21,27 +21,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Cargar datos desde GitHub o localStorage
-    let scrimsData = JSON.parse(localStorage.getItem('scrims')) || [];
-    let nameData = JSON.parse(localStorage.getItem('name')) || [
-        {"nombre": "21S", "imagen": "21S.png"},
-        {"nombre": "7N", "imagen": "7N.png"},
-        {"nombre": "ARMADYL", "imagen": "AD.png"},
-        {"nombre": "HELLSTAR", "imagen": "AHS.png"},
-        {"nombre": "ALQ MOB", "imagen": "ALQ.png"},
-        {"nombre": "ARENA", "imagen": "ARENA.png"},
-        {"nombre": "T1", "imagen": "t1.png"},
-        {"nombre": "AS PC", "imagen": "AS.png"}
-    ];
-    let rankingsData = JSON.parse(localStorage.getItem('rankings')) || [];
+    // Cargar datos desde GitHub
+    const githubBaseUrl = 'https://raw.githubusercontent.com/tu-usuario/uzx_oficial/main/data/';
+    Promise.all([
+        fetch(`${githubBaseUrl}scrims.json`).then(res => res.json()).catch(() => []),
+        fetch(`${githubBaseUrl}name.json`).then(res => res.json()).catch(() => [
+            {"nombre": "21S", "imagen": "21S.png"},
+            {"nombre": "7N", "imagen": "7N.png"},
+            {"nombre": "ARMADYL", "imagen": "AD.png"},
+            {"nombre": "HELLSTAR", "imagen": "AHS.png"},
+            {"nombre": "ALQ MOB", "imagen": "ALQ.png"},
+            {"nombre": "ARENA", "imagen": "ARENA.png"},
+            {"nombre": "T1", "imagen": "t1.png"},
+            {"nombre": "AS PC", "imagen": "AS.png"}
+        ]),
+        fetch(`${githubBaseUrl}rankings.json`).then(res => res.json()).catch(() => [])
+    ]).then(([scrims, name, rankings]) => {
+        scrimsData = scrims;
+        window.nameData = name;
+        rankingsData = rankings;
+        mostrarScrims(scrimsData);
+        actualizarRanking(true);
+        cargarFormularioAdmin();
+    });
 
-    window.nameData = nameData;
-    mostrarScrims(scrimsData);
-    actualizarRanking(true); // Cargar inicial sin animación
-    cargarFormularioAdmin();
-
-    // Mostrar última actualización
-    const lastUpdated = localStorage.getItem('lastUpdated') || '--';
+    let scrimsData = [];
+    let rankingsData = [];
+    let lastUpdated = localStorage.getItem('lastUpdated') || '--';
     document.getElementById('last-updated').textContent = `Última actualización: ${lastUpdated}`;
 
     function actualizarRanking(animate = false) {
@@ -69,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         });
 
-        localStorage.setItem('rankings', JSON.stringify(nuevoRanking));
         rankingsData = nuevoRanking;
         mostrarRanking(nuevoRanking, animate);
     }
@@ -105,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = 'scrim-item';
             const userLikes = JSON.parse(localStorage.getItem(`likes_${userId}`)) || [];
-            const hasLiked = userLikes.includes(scrim.id);
+            const hasLiked = userLikes.includes(scrim.id.toString());
             div.innerHTML = `
                 <h3>Scrim ${scrim.id}</h3>
                 <p>Fecha: ${scrim.fecha}</p>
@@ -119,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.like-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const scrimId = btn.dataset.id;
-                    scrimsData = JSON.parse(localStorage.getItem('scrims')) || [];
                     const scrim = scrimsData.find(s => s.id == scrimId);
                     if (scrim) {
                         scrim.likes = (scrim.likes || 0) + 1;
@@ -127,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         userLikes.push(scrimId);
                         localStorage.setItem(`likes_${userId}`, JSON.stringify(userLikes));
                         localStorage.setItem('scrims', JSON.stringify(scrimsData));
+                        updateGitHubFiles();
                         btn.textContent = `Like (${scrim.likes})`;
                         btn.disabled = true;
                     }
@@ -196,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const nuevoScrim = {
                 id: nuevoId,
                 fecha: new Date().toISOString().split('T')[0],
-                imagenBase64: event.target.result, // Guardar imagen en base64
+                imagenBase64: event.target.result,
                 likes: 0,
                 resultados
             };
@@ -205,21 +210,33 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('lastUpdated', new Date().toLocaleString());
             document.getElementById('last-updated').textContent = `Última actualización: ${new Date().toLocaleString()}`;
             actualizarNameJson(resultados);
-            actualizarRanking(true); // Con animación
+            updateGitHubFiles();
+            actualizarRanking(true);
             mostrarScrims(scrimsData);
             alert('Scrim subido con éxito');
         };
         reader.readAsDataURL(file);
     });
 
+    function updateGitHubFiles() {
+        fetch('/.netlify/functions/update-data', {
+            method: 'POST',
+            body: JSON.stringify({
+                scrims: scrimsData,
+                name: window.nameData,
+                rankings: rankingsData
+            })
+        }).then(response => response.json())
+          .then(data => console.log(data.message))
+          .catch(error => console.error('Error updating GitHub:', error));
+    }
+
     function actualizarNameJson(resultados) {
-        let nameData = JSON.parse(localStorage.getItem('name')) || [];
         resultados.forEach(equipo => {
-            if (!nameData.some(e => e.nombre === equipo.nombre)) {
-                nameData.push({ nombre: equipo.nombre, imagen: `${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png` });
+            if (!window.nameData.some(e => e.nombre === equipo.nombre)) {
+                window.nameData.push({ nombre: equipo.nombre, imagen: `${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png` });
             }
         });
-        localStorage.setItem('name', JSON.stringify(nameData));
-        window.nameData = nameData;
+        localStorage.setItem('name', JSON.stringify(window.nameData));
     }
 });
