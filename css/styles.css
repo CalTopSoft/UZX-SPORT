@@ -5,44 +5,43 @@
 }
 
 body {
-    background: linear-gradient(135deg, #121212, #1B5E20);
-    color: #C8E6C9;
+    background: #121212;
+    color: #E0E0E0;
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
 }
 
 header {
-    background: #1B5E20;
+    background: #1B3C34;
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(27, 94, 32, 0.7);
+    box-shadow: 0 4px 12px rgba(27, 60, 52, 0.7);
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
 .logo {
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #FFCA28;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
 }
 
 nav a {
-    color: #C8E6C9;
+    color: #E0E0E0;
     margin-left: 30px;
     text-decoration: none;
     font-size: 1.2rem;
     font-weight: 700;
-    transition: color 0.3s, transform 0.3s;
+    transition: color 0.3s;
 }
 
 nav a:hover {
     color: #FFCA28;
-    transform: scale(1.1);
 }
 
 .container {
@@ -54,8 +53,7 @@ nav a:hover {
     width: 300px;
     background: #1E1E1E;
     padding: 30px 20px;
-    border-right: 3px solid #1B5E20;
-    box-shadow: 5px 0 15px rgba(27, 94, 32, 0.3);
+    border-right: 3px solid #1B3C34;
 }
 
 .sidebar ul {
@@ -65,17 +63,15 @@ nav a:hover {
 .sidebar li {
     padding: 20px;
     font-size: 1.3rem;
-    color: #C8E6C9;
+    color: #E0E0E0;
     cursor: pointer;
     transition: all 0.3s;
-    border-bottom: 1px solid rgba(27, 94, 32, 0.2);
-    background: linear-gradient(to right, transparent, rgba(27, 94, 32, 0.1));
+    background: linear-gradient(to right, transparent, rgba(27, 60, 52, 0.2));
 }
 
 .sidebar li:hover, .sidebar li.active {
-    background: #1B5E20;
+    background: #1B3C34;
     color: #FFF;
-    transform: translateX(10px);
 }
 
 #last-updated {
@@ -90,16 +86,19 @@ main {
     padding: 40px;
 }
 
-.content {
-    background: rgba(30, 30, 30, 0.95);
+.hero, .content {
+    background: #1E1E1E;
     padding: 50px;
     border-radius: 15px;
-    box-shadow: 0 6px 25px rgba(27, 94, 32, 0.5);
-    display: none;
+    box-shadow: 0 6px 25px rgba(27, 60, 52, 0.5);
 }
 
-.content.active {
-    display: block;
+h1 {
+    font-size: 3rem;
+    color: #FFCA28;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 202, 40, 0.5);
 }
 
 h2 {
@@ -107,12 +106,48 @@ h2 {
     color: #FFCA28;
     margin-bottom: 30px;
     text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(255, 202, 40, 0.5);
 }
 
+p {
+    font-size: 1.2rem;
+    color: #E0E0E0;
+}
+
+.hero-buttons {
+    margin-top: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #FFCA28;
+    color: #1B3C34;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #E0B923;
+}
+
+.btn.secondary {
+    background: transparent;
+    border: 2px solid #FFCA28;
+    color: #FFCA28;
+}
+
+.btn.secondary:hover {
+    background: #FFCA28;
+    color: #1B3C34;
+}
+
+.content { display: none; }
+.content.active { display: block; }
+
 #ranking-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 15px;
 }
 
@@ -124,13 +159,11 @@ h2 {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s, opacity 0.5s;
-    opacity: 0;
+    transition: transform 0.3s;
 }
 
-.ranking-item.show {
-    opacity: 1;
-    transform: translateY(0);
+.ranking-item:hover {
+    transform: translateY(-5px);
 }
 
 .ranking-item img {
@@ -141,14 +174,13 @@ h2 {
 
 .ranking-item span {
     font-size: 1.2rem;
-    color: #C8E6C9;
+    color: #E0E0E0;
 }
 
 .ranking-item .trend img {
     width: 20px;
-    height: 45px;
+    height: 20px;
     vertical-align: middle;
-    margin-left: 25px;
 }
 
 .grid {
@@ -177,7 +209,7 @@ h2 {
 
 .scrim-item h3 {
     font-size: 1.5rem;
-    color: #C8E6C9;
+    color: #E0E0E0;
 }
 
 .scrim-item p {
@@ -186,7 +218,7 @@ h2 {
 }
 
 .like-btn {
-    background: #1B5E20;
+    background: #1B3C34;
     color: #FFF;
     border: none;
     padding: 10px 20px;
@@ -197,7 +229,7 @@ h2 {
 
 .like-btn:hover {
     background: #FFCA28;
-    color: #121212;
+    color: #1B3C34;
 }
 
 .like-btn:disabled {
@@ -222,11 +254,11 @@ table {
 th, td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #1B5E20;
+    border-bottom: 1px solid #1B3C34;
 }
 
 th {
-    background: #1B5E20;
+    background: #1B3C34;
     color: #FFF;
     font-weight: 700;
 }
@@ -238,10 +270,10 @@ td {
 td input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #1B5E20;
+    border: 1px solid #1B3C34;
     border-radius: 5px;
     background: #2E2E2E;
-    color: #C8E6C9;
+    color: #E0E0E0;
     font-size: 1rem;
 }
 
@@ -255,7 +287,7 @@ input:invalid {
 }
 
 button {
-    background: #1B5E20;
+    background: #1B3C34;
     color: #FFF;
     border: none;
     padding: 12px 25px;
@@ -268,17 +300,39 @@ button {
 
 button:hover {
     background: #FFCA28;
-    color: #121212;
+    color: #1B3C34;
 }
 
 @media (max-width: 768px) {
     .container { flex-direction: column; }
-    .sidebar { width: 100%; border-right: none; border-bottom: 3px solid #1B5E20; }
-    .sidebar ul { display: flex; justify-content: space-around; }
-    .sidebar li { padding: 15px; font-size: 1rem; }
+    .sidebar { 
+        width: 100%; 
+        border-right: none; 
+        border-bottom: 3px solid #1B3C34; 
+        padding: 15px;
+    }
+    .sidebar ul { 
+        display: flex; 
+        justify-content: space-around; 
+        flex-wrap: wrap;
+    }
+    .sidebar li { 
+        padding: 10px; 
+        font-size: 1rem; 
+        flex: 1; 
+        text-align: center;
+    }
+    main { padding: 20px; }
+    .hero, .content { padding: 30px; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.8rem; }
     .ranking-item {
-        grid-template-columns: 60px 1fr 80px 80px;
+        grid-template-columns: 60px 1fr;
         gap: 10px;
+        padding: 15px;
+    }
+    .ranking-item span:nth-child(3), .ranking-item span:nth-child(4) {
+        grid-column: 2;
     }
     .grid { grid-template-columns: 1fr; }
     table { table-layout: fixed; }
