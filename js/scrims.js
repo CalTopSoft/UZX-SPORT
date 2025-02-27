@@ -86,8 +86,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const trend = equipo.posicion < equipo.posicionAnterior ? 'up' : (equipo.posicion > equipo.posicionAnterior ? 'down' : '');
             const trendIcon = trend ? `<img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/icons/${trend}.png" alt="${trend}">` : '';
             const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '';
+            const logoUrl = `https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipo.imagen}`;
+            console.log(`Intentando cargar logo para ${equipo.nombre}: ${logoUrl}`); // Depuración
             div.innerHTML = `
-                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipo.imagen}" alt="${equipo.nombre}" onerror="this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
+                <img src="${logoUrl}" alt="${equipo.nombre}" onerror="console.error('Error cargando logo para ${equipo.nombre}: ${logoUrl}'); this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
                 <span>${equipo.nombre}</span>
                 <span>${equipo.puntos} pts</span>
                 <span class="trend">#${equipo.posicion} ${trendIcon} ${posicionChange ? posicionChange : ''}</span>
