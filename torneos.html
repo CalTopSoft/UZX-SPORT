@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneos - UZX OFICIAL</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="overlay"></div>
+    <header>
+        <h1>TORNEOS</h1>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="scrims.html">Scrims</a>
+            <a href="equipos.html">Equipos</a>
+            <a href="#" id="login-link">Login</a>
+            <a href="#" id="logout-link" class="hidden">Logout</a>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li class="active" data-section="ranking">Top Equipos</li>
+                <li data-section="admin" class="hidden admin-only">Admin</li>
+            </ul>
+        </aside>
+        <main>
+            <section id="ranking" class="content active">
+                <h2>Top Equipos - Torneos</h2>
+                <div id="ranking-list"></div>
+            </section>
+            <section id="admin" class="content hidden admin-only">
+                <h2>Subir Torneo</h2>
+                <form id="admin-form">
+                    <input type="file" id="tabla-img" accept="image/*" required>
+                    <div id="resultados-input"></div>
+                    <button type="submit">Subir</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="js/main.js"></script>
+    <script src="js/torneos.js"></script>
+</body>
+</html>

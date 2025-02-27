@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrims - UZX OFICIAL</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">UZX OFICIAL</div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="#" id="login-link">Login</a>
+            <a href="#" id="logout-link" class="hidden">Logout</a>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li class="active" data-section="ranking">Top Equipos</li>
+                <li data-section="ultimas">Últimas Scrims</li>
+                <li data-section="admin" class="hidden admin-only">Admin</li>
+            </ul>
+            <p id="last-updated">Última actualización: --</p>
+        </aside>
+        <main>
+            <section id="ranking" class="content active">
+                <h2>Top Equipos - Scrims</h2>
+                <div id="ranking-list"></div>
+            </section>
+            <section id="ultimas" class="content">
+                <h2>Últimas Scrims</h2>
+                <div id="scrims-container" class="grid"></div>
+            </section>
+            <section id="admin" class="content hidden admin-only">
+                <h2>Subir Scrim</h2>
+                <form id="admin-form">
+                    <input type="file" id="tabla-img" accept="image/*" required>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Equipo</th>
+                                <th>Top</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultados-input"></tbody>
+                    </table>
+                    <button type="button" id="fill-random">Llenar Aleatorio</button>
+                    <button type="submit">Subir Scrim</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="js/main.js"></script>
+    <script src="js/scrims.js"></script>
+</body>
+</html>
