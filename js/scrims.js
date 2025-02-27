@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const sidebarItems = document.querySelectorAll('.sidebar li');
     const sections = document.querySelectorAll('.content');
+    let isUploading = false; // Bloqueo para evitar múltiples subidas simultáneas
 
     if (isAdmin) {
         document.querySelector('.sidebar li[data-section="admin"]').classList.remove('hidden');
@@ -92,10 +93,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const div = document.createElement('div');
             div.className = 'ranking-item';
             const trend = equipo.posicion < equipo.posicionAnterior ? 'up' : (equipo.posicion > equipo.posicionAnterior ? 'down' : '');
-            const trendIcon = trend ? `<img src="../assets/icons/${trend}.png" alt="${trend}">` : '';
+            const trendIcon = trend ? `<img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/icons/${trend}.png" alt="${trend}">` : '';
             const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '';
             div.innerHTML = `
-                <img src="../logos/${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png" alt="${equipo.nombre}" onerror="this.src='https://via.placeholder.com/50'">
+                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipo.nombre.toLowerCase().replace(/\s/g, '_')}.png" alt="${equipo.nombre}" onerror="this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
                 <span>${equipo.nombre}</span>
                 <span>${equipo.puntos} pts</span>
                 <span class="trend">#${equipo.posicion} ${trendIcon} ${posicionChange ? posicionChange : ''}</span>
@@ -120,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             div.innerHTML = `
                 <h3>Scrim ${scrim.id}</h3>
                 <p>Fecha: ${scrim.fecha}</p>
-                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/${scrim.imagen}" alt="Tabla Scrim ${scrim.id}" onerror="this.src='https://via.placeholder.com/50'">
+                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/${scrim.imagen}" alt="Tabla Scrim ${scrim.id}" onerror="this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
                 <button class="like-btn" data-id="${scrim.id}" ${loggedIn && !hasLiked ? '' : 'disabled'}>Like (${scrim.likes || 0})</button>
             `;
             container.appendChild(div);
@@ -192,6 +193,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('admin-form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (isUploading) {
+            alert('Por favor, espera a que termine de subir el scrim anterior.');
+            return;
+        }
+        isUploading = true;
         const fileInput = document.getElementById('tabla-img');
         const file = fileInput.files[0];
         const resultados = Array.from(document.querySelectorAll('#resultados-input tr')).map(tr => {
@@ -212,14 +218,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
             scrimsData.push(nuevoScrim);
 
-            // Convertir imagen a base64 en el cliente
-            const imageContent = event.target.result.split(',')[1]; // Remover "data:image/png;base64,"
+            const imageContent = event.target.result.split(',')[1];
             await updateGitHubFiles(fileName, imageContent);
             localStorage.setItem('lastUpdated', new Date().toLocaleString());
             document.getElementById('last-updated').textContent = `Última actualización: ${new Date().toLocaleString()}`;
             actualizarRanking(true);
             mostrarScrims(scrimsData);
             alert('Scrim subido con éxito');
+            isUploading = false;
         };
         reader.readAsDataURL(file);
     });
@@ -240,7 +246,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
             console.log(data.message);
 
-            // Actualizar datos locales desde GitHub después de escribir
             const [scrimsResponse, nameResponse, rankingsResponse] = await Promise.all([
                 fetch(`${githubBaseUrl}scrims.json`).then(res => res.json()),
                 fetch(`${githubBaseUrl}name.json`).then(res => res.json()),
@@ -251,6 +256,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             rankingsData = rankingsResponse;
         } catch (error) {
             console.error('Error updating GitHub:', error);
+            isUploading = false; // Resetear en caso de error
         }
     }
 });
