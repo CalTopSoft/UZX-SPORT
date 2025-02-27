@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const loggedIn = localStorage.getItem('loggedIn') === 'true';
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const userId = localStorage.getItem('userId') || `user_${Math.random().toString(36).substr(2, 9)}`;
@@ -27,36 +27,40 @@ document.addEventListener('DOMContentLoaded', () => {
     let nameData = [];
     let rankingsData = [];
 
-    Promise.all([
-        fetch(`${githubBaseUrl}scrims.json`).then(res => res.json()).catch(() => []),
-        fetch(`${githubBaseUrl}name.json`).then(res => res.json()).catch(() => [
-            {"nombre": "21S", "imagen": "21S.png"},
-            {"nombre": "7N", "imagen": "7N.png"},
-            {"nombre": "ARMADYL", "imagen": "AD.png"},
-            {"nombre": "HELLSTAR", "imagen": "AHS.png"},
-            {"nombre": "ALQ MOB", "imagen": "ALQ.png"},
-            {"nombre": "ARENA", "imagen": "ARENA.png"},
-            {"nombre": "T1", "imagen": "t1.png"},
-            {"nombre": "AS PC", "imagen": "AS.png"}
-        ]),
-        fetch(`${githubBaseUrl}rankings.json`).then(res => res.json()).catch(() => [])
-    ]).then(([scrims, name, rankings]) => {
-        scrimsData = scrims;
-        nameData = name;
-        rankingsData = rankings;
+    try {
+        const [scrimsResponse, nameResponse, rankingsResponse] = await Promise.all([
+            fetch(`${githubBaseUrl}scrims.json`).then(res => res.ok ? res.json() : []),
+            fetch(`${githubBaseUrl}name.json`).then(res => res.ok ? res.json() : [
+                {"nombre": "21S", "imagen": "21S.png"},
+                {"nombre": "7N", "imagen": "7N.png"},
+                {"nombre": "ARMADYL", "imagen": "AD.png"},
+                {"nombre": "HELLSTAR", "imagen": "AHS.png"},
+                {"nombre": "ALQ MOB", "imagen": "ALQ.png"},
+                {"nombre": "ARENA", "imagen": "ARENA.png"},
+                {"nombre": "T1", "imagen": "t1.png"},
+                {"nombre": "AS PC", "imagen": "AS.png"}
+            ]),
+            fetch(`${githubBaseUrl}rankings.json`).then(res => res.ok ? res.json() : [])
+        ]);
+        scrimsData = scrimsResponse;
+        nameData = nameResponse;
+        rankingsData = rankingsResponse;
+
+        // Sincronizar localStorage con GitHub
+        localStorage.setItem('scrims', JSON.stringify(scrimsData));
+        localStorage.setItem('name', JSON.stringify(nameData));
+        localStorage.setItem('rankings', JSON.stringify(rankingsData));
+
         window.nameData = nameData;
         mostrarScrims(scrimsData);
         actualizarRanking(true);
         cargarFormularioAdmin();
 
-        // Sincronizar localStorage con GitHub al inicio
-        localStorage.setItem('scrims', JSON.stringify(scrimsData));
-        localStorage.setItem('name', JSON.stringify(nameData));
-        localStorage.setItem('rankings', JSON.stringify(rankingsData));
-    }).catch(err => console.error('Error loading data from GitHub:', err));
-
-    let lastUpdated = localStorage.getItem('lastUpdated') || '--';
-    document.getElementById('last-updated').textContent = `Última actualización: ${lastUpdated}`;
+        let lastUpdated = localStorage.getItem('lastUpdated') || '--';
+        document.getElementById('last-updated').textContent = `Última actualización: ${lastUpdated}`;
+    } catch (err) {
+        console.error('Error loading data from GitHub:', err);
+    }
 
     function actualizarRanking(animate = false) {
         const puntosPorTop = [10, 9, 8, 7, 6, 5, 4, 3];
@@ -204,11 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = async function(event) {
             scrimsData = JSON.parse(localStorage.getItem('scrims')) || [];
             const nuevoId = scrimsData.length + 1;
             const nuevoScrim = {
-                id: nuevoId.toString(), // Convertir a string para consistencia con likes
+                id: nuevoId.toString(),
                 fecha: new Date().toISOString().split('T')[0],
                 imagenBase64: event.target.result,
                 likes: 0,
@@ -219,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('lastUpdated', new Date().toLocaleString());
             document.getElementById('last-updated').textContent = `Última actualización: ${new Date().toLocaleString()}`;
             actualizarNameJson(resultados);
-            updateGitHubFiles();
+            await updateGitHubFiles(); // Esperar a que se actualice en GitHub
             actualizarRanking(true);
             mostrarScrims(scrimsData);
             alert('Scrim subido con éxito');
@@ -227,35 +231,35 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsDataURL(file);
     });
 
-    function updateGitHubFiles() {
-        fetch('/.netlify/functions/update-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                scrims: scrimsData,
-                name: window.nameData,
-                rankings: rankingsData
-            })
-        }).then(response => response.json())
-          .then(data => {
-              console.log(data.message);
-              // Actualizar datos locales desde GitHub después de escribir
-              Promise.all([
-                  fetch(`${githubBaseUrl}scrims.json`).then(res => res.json()),
-                  fetch(`${githubBaseUrl}name.json`).then(res => res.json()),
-                  fetch(`${githubBaseUrl}rankings.json`).then(res => res.json())
-              ]).then(([scrims, name, rankings]) => {
-                  scrimsData = scrims;
-                  window.nameData = name;
-                  rankingsData = rankings;
-                  localStorage.setItem('scrims', JSON.stringify(scrimsData));
-                  localStorage.setItem('name', JSON.stringify(window.nameData));
-                  localStorage.setItem('rankings', JSON.stringify(rankingsData));
-                  mostrarScrims(scrimsData);
-                  actualizarRanking(false);
-              });
-          })
-          .catch(error => console.error('Error updating GitHub:', error));
+    async function updateGitHubFiles() {
+        try {
+            const response = await fetch('https://uzx-sport.netlify.app/.netlify/functions/update-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    scrims: scrimsData,
+                    name: window.nameData,
+                    rankings: rankingsData
+                })
+            });
+            const data = await response.json();
+            console.log(data.message);
+
+            // Actualizar datos locales desde GitHub después de escribir
+            const [scrimsResponse, nameResponse, rankingsResponse] = await Promise.all([
+                fetch(`${githubBaseUrl}scrims.json`).then(res => res.json()),
+                fetch(`${githubBaseUrl}name.json`).then(res => res.json()),
+                fetch(`${githubBaseUrl}rankings.json`).then(res => res.json())
+            ]);
+            scrimsData = scrimsResponse;
+            window.nameData = nameResponse;
+            rankingsData = rankingsResponse;
+            localStorage.setItem('scrims', JSON.stringify(scrimsData));
+            localStorage.setItem('name', JSON.stringify(window.nameData));
+            localStorage.setItem('rankings', JSON.stringify(rankingsData));
+        } catch (error) {
+            console.error('Error updating GitHub:', error);
+        }
     }
 
     function actualizarNameJson(resultados) {
