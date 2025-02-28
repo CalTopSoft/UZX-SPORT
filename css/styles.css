@@ -5,45 +5,242 @@
 }
 
 body {
-    background: #121212;
-    color: #E0E0E0;
-    font-family: 'Montserrat', sans-serif;
+    background: #0B0F14; /* Negro azulado profundo */
+    color: #D9E2EC; /* Blanco grisáceo suave */
+    font-family: 'Oswald', sans-serif; /* Fuente deportiva */
     line-height: 1.6;
 }
 
+/* Header */
 header {
-    background: #1B3C34;
+    background: linear-gradient(135deg, #1A2634, #2C3E50); /* Gradiente azul oscuro */
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(27, 60, 52, 0.7);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
 .logo {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    color: #FFCA28;
+    color: #00DDEB; /* Cian brillante */
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(0, 221, 235, 0.5);
 }
 
 nav a {
-    color: #E0E0E0;
-    margin-left: 30px;
+    color: #D9E2EC;
+    margin-left: 25px;
     text-decoration: none;
     font-size: 1.2rem;
-    font-weight: 700;
-    transition: color 0.3s;
+    font-weight: 600;
+    transition: color 0.3s, transform 0.3s;
 }
 
 nav a:hover {
-    color: #FFCA28;
+    color: #00DDEB;
+    transform: scale(1.1);
 }
 
+/* Hero */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #1A2634, #0B0F14);
+    padding: 60px 40px;
+    min-height: 80vh;
+    border-bottom: 3px solid #00DDEB;
+}
+
+.hero-content {
+    max-width: 50%;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    color: #00DDEB;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px rgba(0, 221, 235, 0.6);
+}
+
+.hero p {
+    font-size: 1.4rem;
+    color: #D9E2EC;
+    margin-bottom: 30px;
+}
+
+.hero-buttons .btn {
+    padding: 15px 30px;
+    background: #FF3D68; /* Rojo vibrante */
+    color: #FFF;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.hero-buttons .btn:hover {
+    background: #E6395F;
+    transform: scale(1.05);
+}
+
+.hero-buttons .btn.secondary {
+    background: transparent;
+    border: 2px solid #FF3D68;
+    color: #FF3D68;
+}
+
+.hero-buttons .btn.secondary:hover {
+    background: #FF3D68;
+    color: #FFF;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 221, 235, 0.4);
+}
+
+/* Tournaments */
+.tournaments {
+    padding: 60px 40px;
+    background: #0B0F14;
+}
+
+.tournaments h2 {
+    font-size: 3rem;
+    color: #FF3D68;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.tournaments p {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.tournament-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.tournament-card {
+    background: #1A2634;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+}
+
+.tournament-card:hover {
+    transform: translateY(-5px);
+}
+
+.tournament-card h3 {
+    font-size: 1.8rem;
+    color: #D9E2EC;
+    margin-bottom: 10px;
+}
+
+.tournament-card p {
+    font-size: 1rem;
+    color: #B0BEC5;
+}
+
+.tournament-card .btn.small {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+/* Clan */
+.clan {
+    padding: 60px 40px;
+    background: linear-gradient(135deg, #0B0F14, #1A2634);
+    border-top: 3px solid #FF3D68;
+}
+
+.clan h2 {
+    font-size: 3rem;
+    color: #00DDEB;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.clan p {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.clan-form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.clan-form input {
+    padding: 15px;
+    font-size: 1.2rem;
+    border: 2px solid #FF3D68;
+    border-radius: 5px;
+    background: #252525;
+    color: #D9E2EC;
+}
+
+.clan-form button {
+    padding: 15px;
+    background: #FF3D68;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.clan-form button:hover {
+    background: #E6395F;
+}
+
+/* Footer */
+footer {
+    padding: 20px 40px;
+    background: #1A2634;
+    text-align: center;
+    border-top: 2px solid #00DDEB;
+}
+
+footer p {
+    font-size: 0.9rem;
+    color: #B0BEC5;
+}
+
+.social-links a {
+    color: #00DDEB;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: #FF3D68;
+}
+
+/* Container y Sidebar (para scrims.html) */
 .container {
     display: flex;
     min-height: calc(100vh - 80px);
@@ -51,9 +248,9 @@ nav a:hover {
 
 .sidebar {
     width: 300px;
-    background: #1E1E1E;
+    background: #1A2634;
     padding: 30px 20px;
-    border-right: 3px solid #1B3C34;
+    border-right: 3px solid #FF3D68;
 }
 
 .sidebar ul {
@@ -62,90 +259,54 @@ nav a:hover {
 
 .sidebar li {
     padding: 20px;
-    font-size: 1.3rem;
-    color: #E0E0E0;
+    font-size: 1.5rem;
+    color: #D9E2EC;
     cursor: pointer;
     transition: all 0.3s;
-    background: linear-gradient(to right, transparent, rgba(27, 60, 52, 0.2));
+    background: linear-gradient(to right, transparent, rgba(255, 61, 104, 0.2));
 }
 
 .sidebar li:hover, .sidebar li.active {
-    background: #1B3C34;
+    background: #FF3D68;
     color: #FFF;
 }
 
 #last-updated {
     margin-top: 20px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #B0BEC5;
     text-align: center;
 }
 
+/* Content (para scrims.html) */
 main {
     flex: 1;
     padding: 40px;
 }
 
 .hero, .content {
-    background: #1E1E1E;
+    background: #252525;
     padding: 50px;
     border-radius: 15px;
-    box-shadow: 0 6px 25px rgba(27, 60, 52, 0.5);
-}
-
-h1 {
-    font-size: 3rem;
-    color: #FFCA28;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(255, 202, 40, 0.5);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
 }
 
 h2 {
     font-size: 2.5rem;
-    color: #FFCA28;
+    color: #FF3D68;
     margin-bottom: 30px;
     text-transform: uppercase;
 }
 
 p {
     font-size: 1.2rem;
-    color: #E0E0E0;
-}
-
-.hero-buttons {
-    margin-top: 20px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 12px 25px;
-    background: #FFCA28;
-    color: #1B3C34;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: 700;
-    transition: background 0.3s;
-}
-
-.btn:hover {
-    background: #E0B923;
-}
-
-.btn.secondary {
-    background: transparent;
-    border: 2px solid #FFCA28;
-    color: #FFCA28;
-}
-
-.btn.secondary:hover {
-    background: #FFCA28;
-    color: #1B3C34;
+    color: #D9E2EC;
 }
 
 .content { display: none; }
 .content.active { display: block; }
 
+/* Ranking (100% Original desde tu CSS) */
 #ranking-list {
     display: grid;
     gap: 15px;
@@ -184,15 +345,14 @@ p {
     margin-left: 25px;
 }
 
-
-
-.trend{
+.trend {
     width: 152px;
     height: 45px;
     vertical-align: middle;
     margin-left: -10px;
 }
 
+/* Scrims */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -215,11 +375,12 @@ p {
     max-width: 100%;
     border-radius: 8px;
     margin-top: 15px;
+    border: 2px solid #FF3D68;
 }
 
 .scrim-item h3 {
     font-size: 1.5rem;
-    color: #E0E0E0;
+    color: #D9E2EC;
 }
 
 .scrim-item p {
@@ -227,28 +388,29 @@ p {
     color: #B0BEC5;
 }
 
+/* Like Button */
 .like-btn {
-    background: #1B3C34;
+    background: linear-gradient(135deg, #FF3D68, #E6395F);
     color: #FFF;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 50px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s ease-in-out;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(255, 61, 104, 0.4);
 }
 
 .like-btn:hover {
-    background: #FFCA28;
-    color: #1B3C34;
+    background: linear-gradient(135deg, #E6395F, #FF3D68);
+    transform: scale(1.08);
 }
 
-.like-btn:disabled {
-    background: #616161;
-    cursor: not-allowed;
-}
-
-.hidden, .admin-only.hidden { display: none; }
-
+/* Admin Form */
 #admin-form {
     display: flex;
     flex-direction: column;
@@ -264,11 +426,11 @@ table {
 th, td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #1B3C34;
+    border-bottom: 1px solid #FF3D68;
 }
 
 th {
-    background: #1B3C34;
+    background: #1A2634;
     color: #FFF;
     font-weight: 700;
 }
@@ -280,10 +442,10 @@ td {
 td input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #1B3C34;
+    border: 1px solid #FF3D68;
     border-radius: 5px;
-    background: #2E2E2E;
-    color: #E0E0E0;
+    background: #252525;
+    color: #D9E2EC;
     font-size: 1rem;
 }
 
@@ -293,46 +455,42 @@ td input[readonly] {
 }
 
 input:invalid {
-    border-color: #F44336;
+    border-color: #FF3D68;
 }
 
 button {
-    background: #1B3C34;
+    background: linear-gradient(135deg, #FF3D68, #E6395F);
     color: #FFF;
     border: none;
     padding: 12px 25px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.2rem;
-    transition: background 0.3s;
+    transition: all 0.3s;
     margin-right: 15px;
 }
 
 button:hover {
-    background: #FFCA28;
-    color: #1B3C34;
+    background: linear-gradient(135deg, #E6395F, #FF3D68);
 }
+
 .reset-btn {
-    background: #F44336;
+    background: #D81E5B;
     color: #FFF;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: background 0.3s;
-    margin-right: 15px;
+    transition: all 0.3s;
 }
 
 .reset-btn:hover {
-    background: #D32F2F;
+    background: #B71C50;
 }
+
+/* Media Queries */
 @media (max-width: 768px) {
     .container { flex-direction: column; }
     .sidebar { 
         width: 100%; 
         border-right: none; 
-        border-bottom: 3px solid #1B3C34; 
+        border-bottom: 3px solid #FF3D68; 
         padding: 15px;
     }
     .sidebar ul { 
@@ -355,11 +513,10 @@ button:hover {
         gap: 10px;
         padding: 10px;
         align-items: center;
-        
     }
     .ranking-item img {
         grid-row: 1 / span 2;
-        margin-top: 5px;
+        margin-top: 15px;
     }
     .ranking-item span:nth-child(2) {
         grid-column: 2;
@@ -381,4 +538,114 @@ button:hover {
     table { table-layout: fixed; }
     th, td { width: 50%; font-size: 0.2rem; padding: 1px; }
     td input { font-size: 0.5rem; padding: 2px; }
+    .hero { flex-direction: column; text-align: center; }
+    .hero-content { max-width: 100%; }
+    .hero-image { margin-top: 20px; }
+    .tournament-grid { grid-template-columns: 1fr; }
+    .clan-form { max-width: 100%; }
+}
+
+@media (max-width: 450px) {
+    header { padding: 15px 20px; }
+    .logo { font-size: 2rem; }
+    nav a { font-size: 1rem; margin-left: 15px; }
+    .hero { padding: 30px 20px; min-height: 60vh; }
+    .hero h1 { font-size: 2rem; }
+    .hero p { font-size: 1rem; }
+    .hero-buttons .btn { padding: 10px 20px; font-size: 1rem; }
+    .ranking-item {
+        grid-template-columns: 50px 1fr auto !important;
+        gap: 5px;
+        padding: 8px;
+    }
+    .container {
+        display: flex;
+        min-height: calc(10vh - 10px);
+    }
+    .ranking-item .trend img {
+        width: 25px;
+        height: 45px;
+        vertical-align: middle;
+        margin-left: 5px;
+        margin-bottom: 7px;
+    }
+    .trend {
+        width: 152px;
+        height: 45px;
+        vertical-align: middle;
+        margin-left: -80px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    .ranking-item span {
+        font-size: 0.7rem !important;
+    }
+    .trend-placeholder {
+        width: 25px;
+        height: 45px;
+        display: inline-block;
+        visibility: hidden;
+    }
+    .change-placeholder {
+        width: 10px;
+        display: inline-block;
+        visibility: hidden;
+    }
+    .trend img {
+        width: 20px !important;
+        height: 35px !important;
+        margin-left: 10px !important;
+    }
+    .ranking-item span:nth-child(4) {
+        font-size: 0.7rem !important;
+    }
+    .grid { grid-template-columns: 1fr !important; }
+    .scrim-item { padding: 15px; }
+    .scrim-item h3 { font-size: 1.2rem !important; }
+    .scrim-item p { font-size: 0.9rem !important; }
+    td input { padding: 8px !important; font-size: 1rem !important; }
+    th, td { padding: 15px !important; text-align: center; }
+    table { margin-top: 10px; }
+}
+
+@media (max-width: 360px) {
+    header { padding: 15px 20px; }
+    .logo { font-size: 1.5rem !important; }
+    nav a { font-size: 0.9rem !important; margin-left: 10px !important; }
+    .hero h1 { font-size: 1.8rem; }
+    .hero p { font-size: 0.9rem; }
+    .ranking-item {
+        grid-template-columns: 40px 1fr auto !important;
+    }
+    .ranking-item span {
+        font-size: 0.8rem !important;
+    }
+}
+
+@media (max-width: 245px) {
+    .ranking-item {
+        grid-template-columns: 50px 1fr auto !important;
+        gap: 0px;
+        padding: 1px;
+    }
+    .ranking-item img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    .ranking-item span {
+        font-size: 0.9rem !important;
+    }
+    .trend {
+        width: auto !important;
+        margin-left: 0 !important;
+    }
+    .trend img {
+        width: 20px !important;
+        height: 35px !important;
+        margin-left: 5px !important;
+    }
+    .ranking-item span:nth-child(4) {
+        font-size: 0.8rem !important;
+    }
 }

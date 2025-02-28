@@ -84,8 +84,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const div = document.createElement('div');
             div.className = 'ranking-item';
             const trend = equipo.posicion < equipo.posicionAnterior ? 'up' : (equipo.posicion > equipo.posicionAnterior ? 'down' : '');
-            const trendIcon = trend ? `<img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/icons/${trend}.png" alt="${trend}">` : '';
-            const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '';
+            const trendIcon = trend ? `<img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/icons/${trend}.png" alt="${trend}">` : `<span class="trend-placeholder"></span>`;
+            const posicionChange = trend ? Math.abs(equipo.posicion - equipo.posicionAnterior) : '<span class="change-placeholder"></span>';
             const equipoData = window.nameData.find(e => e.nombre === equipo.nombre) || { imagen: 'placeholder.png' };
             const logoUrl = `https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/logos/${equipoData.imagen}`;
             console.log(`Intentando cargar logo para ${equipo.nombre}: ${logoUrl}`);
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <img src="${logoUrl}" alt="${equipo.nombre}" onerror="console.error('Error cargando logo para ${equipo.nombre}: ${logoUrl}'); this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
                 <span>${equipo.nombre}</span>
                 <span>${equipo.puntos} pts</span>
-                <span class="trend">#${equipo.posicion} ${trendIcon} ${posicionChange ? posicionChange : ''}</span>
+                <span class="trend">#${equipo.posicion} ${trendIcon} ${posicionChange}</span>
             `;
             rankingList.appendChild(div);
             if (animate) {
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <h3>Scrim ${scrim.id}</h3>
                 <p>Fecha: ${scrim.fecha}</p>
                 <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/${scrim.imagen}" alt="Tabla Scrim ${scrim.id}" onerror="this.src='https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/placeholder.png'; this.onerror=null;">
-                <button class="like-btn" data-id="${scrim.id}" ${loggedIn && !hasLiked ? '' : 'disabled'}>Like (${scrim.likes || 0})</button>
+                <button class="like-btn" data-id="${scrim.id}" ${loggedIn && !hasLiked ? '' : 'disabled'}>Me Gusta ${scrim.likes || 0}</button>
             `;
             container.appendChild(div);
         });

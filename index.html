@@ -5,26 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UZX SPORT - Bloodstrike</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <div class="logo">UZX SPORT</div>
         <nav>
+            <a href="#home">Inicio</a>
             <a href="scrims.html">Scrims</a>
+            <a href="#torneos">Torneos</a>
+            <a href="#clan">Clan</a>
             <a href="#" id="login-link">Login</a>
             <a href="#" id="logout-link" class="hidden">Logout</a>
         </nav>
     </header>
     <main>
-        <section class="hero">
-            <h1>UZX SPORT - Bloodstrike</h1>
-            <p>Somos una organización líder en scrims y torneos de Bloodstrike. Únete a nuestro clan competitivo y domina el campo de batalla.</p>
-            <div class="hero-buttons">
-                <a href="scrims.html" class="btn">Ver Scrims</a>
-                <a href="#" class="btn secondary">Únete al Clan</a>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>UZX SPORT - Bloodstrike</h1>
+                <p>Domina el campo de batalla con la élite de esports. Organizamos scrims y torneos de alto nivel para Bloodstrike. ¡Únete a la leyenda!</p>
+                <div class="hero-buttons">
+                    <a href="scrims.html" class="btn">Explora Scrims</a>
+                    <a href="#clan" class="btn secondary">Únete al Clan</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://raw.githubusercontent.com/CalTopSoft/UZX-SPORT/main/assets/imgs/bloodstrike-hero.png" alt="Bloodstrike" onerror="this.style.display='none';">
             </div>
         </section>
+        <section id="torneos" class="tournaments">
+            <h2>Torneos Épicos</h2>
+            <p>Compite en nuestros eventos oficiales y demuestra quién manda en Bloodstrike.</p>
+            <div class="tournament-grid">
+                <div class="tournament-card">
+                    <h3>UZX Open 2025</h3>
+                    <p>Fecha: Próximamente</p>
+                    <a href="#" class="btn small">Más Info</a>
+                </div>
+                <div class="tournament-card">
+                    <h3>Clash Series</h3>
+                    <p>Fecha: Cada Mes</p>
+                    <a href="#" class="btn small">Inscríbete</a>
+                </div>
+            </div>
+        </section>
+        <section id="clan" class="clan">
+            <h2>Nuestro Clan Competitivo</h2>
+            <p>Únete a un equipo de élite y lleva tu juego al siguiente nivel. Reclutamos talento puro.</p>
+            <form class="clan-form">
+                <input type="text" placeholder="Nombre" required>
+                <input type="email" placeholder="Email" required>
+                <button type="submit" class="btn">Solicitar Ingreso</button>
+            </form>
+        </section>
+        <footer>
+            <p>&copy; 2025 UZX SPORT. Todos los derechos reservados.</p>
+            <div class="social-links">
+                <a href="#">Discord</a>
+                <a href="#">Twitter</a>
+                <a href="#">YouTube</a>
+            </div>
+        </footer>
     </main>
     <script src="js/main.js"></script>
 </body>
