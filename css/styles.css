@@ -215,6 +215,56 @@ nav a:hover {
     background: #E6395F;
 }
 
+/* Equipos Container */
+#equipos-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual tamaño */
+    gap: 20px; /* Espacio entre equipos */
+    padding: 20px;
+}
+
+/* Equipo Item */
+.equipo-item {
+    background: #2E2E2E;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.equipo-item:hover {
+    transform: scale(1.05); /* Efecto sutil al pasar el mouse */
+}
+
+.equipo-item img {
+    width: 40px; /* Tamaño pequeño */
+    height: 40px;
+    border-radius: 50%; /* Circular para un look moderno */
+    margin-bottom: 10px;
+    border: 2px solid #FF3D68; /* Borde rojo para destacar */
+}
+
+.equipo-item h3 {
+    font-size: 1rem; /* Tamaño más pequeño para encajar bien */
+    color: #D9E2EC;
+    margin-bottom: 8px;
+}
+
+.rooster-details {
+    font-size: 0.8rem; /* Detalles más pequeños */
+    color: #B0BEC5;
+    line-height: 1.4;
+}
+
+.rooster-details.hidden {
+    display: none; /* Oculta los detalles por defecto */
+}
+
 /* Footer */
 footer {
     padding: 20px 40px;
@@ -303,8 +353,13 @@ p {
     color: #D9E2EC;
 }
 
-.content { display: none; }
-.content.active { display: block; }
+.content {
+    display: none !important; /* Oculta todas las secciones por defecto, con máxima prioridad */
+}
+
+.content.active {
+    display: block !important; /* Solo muestra la sección activa, con máxima prioridad */
+}
 
 /* Ranking (100% Original desde tu CSS) */
 #ranking-list {
@@ -495,6 +550,9 @@ button:hover {
         border-bottom: 3px solid #FF3D68; 
         padding: 15px;
     }
+    #equipos-container {
+        grid-template-columns: repeat(4, 1fr); /* 2 columnas en tablets */
+    }
     .sidebar ul { 
         display: flex; 
         justify-content: space-around; 
@@ -570,6 +628,9 @@ button:hover {
         vertical-align: middle;
         margin-left: 5px;
         margin-bottom: 10px;
+    }
+    #equipos-container {
+        grid-template-columns: 2fr; /* 1 columna en móviles */
     }
     .trend {
         width: 152px;
