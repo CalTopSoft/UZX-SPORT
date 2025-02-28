@@ -8,10 +8,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sections = document.querySelectorAll('.content');
     let isUploading = false;
 
-    if (isAdmin) {
-        document.querySelector('.sidebar li[data-section="admin"]').classList.remove('hidden');
-        document.querySelector('#admin').classList.remove('hidden');
+    // Función para actualizar visibilidad de Admin
+    function updateAdminVisibility() {
+        const loggedInNow = localStorage.getItem('loggedIn') === 'true';
+        const isAdminNow = localStorage.getItem('isAdmin') === 'true';
+        const adminSidebar = document.querySelector('.sidebar li[data-section="admin"]');
+        const adminSection = document.getElementById('admin');
+
+        if (loggedInNow && isAdminNow) {
+            adminSidebar.style.display = 'block'; // Mostrar para admin
+            adminSection.style.display = 'block';
+        } else {
+            adminSidebar.style.display = 'none'; // Ocultar si no es admin
+            adminSection.style.display = 'none';
+        }
     }
+
+    // Inicializar visibilidad
+    updateAdminVisibility();
+
+    // Escuchar cambios de autenticación
+    window.addEventListener('authChange', updateAdminVisibility);
 
     sidebarItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -177,6 +194,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('admin-form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
+            alert('Debes estar logeado como administrador para subir scrims.');
+            return;
+        }
         if (isUploading) {
             alert('Por favor, espera a que termine de subir el scrim anterior.');
             return;
@@ -214,9 +235,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         reader.readAsDataURL(file);
     });
 
-    // Nueva funcionalidad para borrar todo
     document.getElementById('reset-data').addEventListener('click', async () => {
         if (!confirm('¿Estás seguro de que quieres borrar todos los scrims y rankings? Esta acción no se puede deshacer.')) {
+            return;
+        }
+        if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
+            alert('Debes estar logeado como administrador para borrar datos.');
             return;
         }
         if (isUploading) {
@@ -234,7 +258,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     scrims: scrimsData,
                     name: window.nameData,
                     rankings: rankingsData,
-                    image: null // No subimos imagen al resetear
+                    image: null
                 })
             });
             document.getElementById('last-updated').textContent = 'Última actualización: --';

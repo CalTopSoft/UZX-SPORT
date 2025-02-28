@@ -336,6 +336,7 @@ p {
 .ranking-item span {
     font-size: 1.2rem;
     color: #E0E0E0;
+
 }
 
 .ranking-item .trend img {
@@ -347,7 +348,7 @@ p {
 
 .trend {
     width: 152px;
-    height: 45px;
+
     vertical-align: middle;
     margin-left: -10px;
 }
@@ -484,6 +485,7 @@ button:hover {
     background: #B71C50;
 }
 
+
 /* Media Queries */
 @media (max-width: 768px) {
     .container { flex-direction: column; }
@@ -516,7 +518,7 @@ button:hover {
     }
     .ranking-item img {
         grid-row: 1 / span 2;
-        margin-top: 15px;
+        
     }
     .ranking-item span:nth-child(2) {
         grid-column: 2;
@@ -567,7 +569,7 @@ button:hover {
         height: 45px;
         vertical-align: middle;
         margin-left: 5px;
-        margin-bottom: 7px;
+        margin-bottom: 10px;
     }
     .trend {
         width: 152px;
@@ -580,6 +582,7 @@ button:hover {
     }
     .ranking-item span {
         font-size: 0.7rem !important;
+        
     }
     .trend-placeholder {
         width: 25px;
@@ -620,6 +623,7 @@ button:hover {
     }
     .ranking-item span {
         font-size: 0.8rem !important;
+        
     }
 }
 

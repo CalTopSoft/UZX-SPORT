@@ -1,21 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginLink = document.getElementById('login-link');
     const logoutLink = document.getElementById('logout-link');
-    const loggedIn = localStorage.getItem('loggedIn') === 'true';
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    // Mostrar u ocultar enlaces según el estado de autenticación
+    // Función para actualizar visibilidad de enlaces
     function updateAuthLinks() {
-        if (localStorage.getItem('loggedIn') === 'true') {
-            loginLink.classList.add('hidden');
-            logoutLink.classList.remove('hidden');
+        const loggedIn = localStorage.getItem('loggedIn') === 'true';
+        if (loggedIn) {
+            loginLink.style.display = 'none'; // Oculta completamente
+            logoutLink.style.display = 'inline'; // Muestra
         } else {
-            loginLink.classList.remove('hidden');
-            logoutLink.classList.add('hidden');
+            loginLink.style.display = 'inline'; // Muestra
+            logoutLink.style.display = 'none'; // Oculta completamente
         }
     }
 
-    // Inicializar visibilidad de enlaces
+    // Inicializar visibilidad al cargar la página
     updateAuthLinks();
 
     // Evento para "Login"
@@ -23,15 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const username = prompt('Usuario:');
         const password = prompt('Contraseña:');
-        if (username === 'admin' && password === 'uzx2023') {
+        if (username && password) { // Cualquier usuario con credenciales no vacías
             localStorage.setItem('loggedIn', 'true');
-            localStorage.setItem('isAdmin', 'true');
-            alert('¡Login exitoso!');
+            if (username === 'admin' && password === 'uzx2023') {
+                localStorage.setItem('isAdmin', 'true');
+                alert('¡Login exitoso como administrador!');
+            } else {
+                localStorage.setItem('isAdmin', 'false');
+                alert('¡Login exitoso como usuario!');
+            }
             updateAuthLinks();
-            // Disparar evento personalizado para que otras páginas reaccionen
-            window.dispatchEvent(new Event('authChange'));
+            window.dispatchEvent(new Event('authChange')); // Notificar a otras páginas
+            location.reload(); // Recargar para reflejar cambios
         } else {
-            alert('Usuario o contraseña incorrectos');
+            alert('Por favor, ingresa un usuario y contraseña válidos.');
         }
     });
 
@@ -42,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('isAdmin');
         alert('¡Sesión cerrada!');
         updateAuthLinks();
-        // Disparar evento personalizado para que otras páginas reaccionen
-        window.dispatchEvent(new Event('authChange'));
+        window.dispatchEvent(new Event('authChange')); // Notificar a otras páginas
+        location.reload(); // Recargar para reflejar cambios
     });
 });

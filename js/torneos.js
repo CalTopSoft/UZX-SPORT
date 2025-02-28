@@ -1,13 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
-
     const sidebarItems = document.querySelectorAll('.sidebar li');
     const sections = document.querySelectorAll('.content');
 
-    if (isAdmin) {
-        document.querySelector('.sidebar li[data-section="admin"]').classList.remove('hidden');
-        document.querySelector('#admin').classList.remove('hidden');
+    // Función para actualizar visibilidad de Admin
+    function updateAdminVisibility() {
+        const loggedIn = localStorage.getItem('loggedIn') === 'true';
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        const adminSidebar = document.querySelector('.sidebar li[data-section="admin"]');
+        const adminSection = document.getElementById('admin');
+
+        if (loggedIn && isAdmin) {
+            adminSidebar.style.display = 'block'; // Mostrar para admin
+            adminSection.style.display = 'block';
+        } else {
+            adminSidebar.style.display = 'none'; // Ocultar si no es admin
+            adminSection.style.display = 'none';
+        }
     }
+
+    // Inicializar visibilidad
+    updateAdminVisibility();
+
+    // Escuchar cambios de autenticación
+    window.addEventListener('authChange', updateAdminVisibility);
 
     sidebarItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -48,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function mostrarRanking(equipos) {
         const rankingList = document.getElementById('ranking-list');
+        rankingList.innerHTML = '';
         equipos.forEach((equipo, index) => {
             const div = document.createElement('div');
             div.className = 'ranking-item';
@@ -83,6 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('admin-form').addEventListener('submit', (e) => {
         e.preventDefault();
+        if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
+            alert('Debes estar logeado como administrador para subir torneos.');
+            return;
+        }
         const fileInput = document.getElementById('tabla-img');
         const file = fileInput.files[0];
         const resultados = Array.from(resultadosInput.children).filter(d => d.tagName === 'DIV').map(div => {
